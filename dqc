@@ -1,0 +1,36 @@
+#include <mdhal/Dac.hpp>
+
+void DAC_c::DAC_Config(float voltage)
+{
+    /* GPIO Configuration for PA5 */
+    /* ************************** */
+    /* Enable port A clock */
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+
+    /* Select Analog mode */
+    GPIOA->MODER |= GPIO_MODER_MODER5;
+
+    /* Select no pull-up, pull-down (reset state) */
+    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR5;
+
+    /* DAC Configuration DAC_OUT2 */
+    /* ************************** */
+    /* Enable DAC clock */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_DAC1EN;
+
+
+    /*enable DAC channel2*/
+    DAC->CR|=DAC_CR_EN2;
+    uint16_t value =(uint16_t)((voltage/3.0f)*4096);
+    DAC->DHR12R2=value  ;
+}
+
+#pragma  once
+/* Includes */
+#include <stm32l432xx.h>
+ class DAC_c
+ {
+ public:
+
+     void DAC_Config(float voltage);
+ };
